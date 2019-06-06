@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Notes Application</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <input id="add-input" class="input-note" type="text" name="firstname" placeholder="Take a note...">
+    <div class="notes-container" ondrop="dropInContainer(event)" ondragover="allowDrop(event)"></div>
+    <div id="clean-storage" ondrop="drop(event)" ondragover="allowDrop(event)">
+        -
+    </div>
+    <script src="presenter.js"></script>
+    <script src="model.js"></script>
+</body>
+</html>
