@@ -7,11 +7,13 @@ function Note(text){
     this.text = text;
     this.date = currentDate;
     this.id = (new Date()).getTime();
+    this.x = Math.floor((Math.random() * 1500) + 1);
+    this.y = Math.floor((Math.random() * 680) + 1);
     if(localStorage.getItem('notesArray') != null){
         notesArray = JSON.parse(localStorage.getItem('notesArray'));
-        notesArray.push({id: this.id, text: this.text, date: this.date});
+        notesArray.push({id: this.id, text: this.text, date: this.date, x: this.x, y: this.y});
     }else{
-        notesArray.push({id: this.id, text: this.text, date: this.date});
+        notesArray.push({id: this.id, text: this.text, date: this.date, x: this.x, y: this.y});
     }
     localStorage.setItem('notesArray', JSON.stringify(notesArray));
     console.log("The local storage at this point is: ", localStorage);
