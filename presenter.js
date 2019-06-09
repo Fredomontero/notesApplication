@@ -1,4 +1,5 @@
 var notesArray = [];
+var actions = [];
 
 
 function Presenter(){
@@ -35,11 +36,14 @@ function Presenter(){
     container.insertAdjacentHTML( 'beforeend', htmlString );
     //attach event to text areas
     var textArea = document.getElementById("ta"+note.id);
+
     textArea.addEventListener('blur', function(){
         var temp = array.find(x => x.id === note.id);
         var idx =  array.indexOf(temp);
         if((array[idx] && array[idx].text) != textArea.value){
             //Updating the array and the Local storage
+            actions.push({type:"text", initialInfo: array[idx].text, finalInfo:textArea.value, elementId:temp.id});
+            console.log("The actions updated are: ", actions);
             if(array[idx])
                 array[idx].text = textArea.value;
             localStorage.setItem('notesArray', JSON.stringify(array));
@@ -120,8 +124,9 @@ function dropInContainer(ev){
     item.style.left = ev.pageX+"px";
     item.style.top = ev.pageY+"px";
     var note = notesArray.find(x => x.id == item.id);
+    actions.push({type:"position", initialInfo: {x:note.x, y:note.y}, finalInfo:{x:ev.pageX, y:ev.pageY}, elementId:item.id});
     note.x = ev.pageX;
-    note.y = ev.pageY;
+    note.y = ev.pageY;    
     updateNote(notesArray, note);
 }
 
