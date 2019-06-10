@@ -1,14 +1,23 @@
-function Note(text){
-    console.log("Crando Nota");
+function Note(data){
     var notesArray = [];
     var d = new Date();
     var currentDate = getCurrentDate(d);
 
-    this.text = text;
-    this.date = currentDate;
-    this.id = (new Date()).getTime();
-    this.x = Math.floor((Math.random() * 1500) + 1);
-    this.y = Math.floor((Math.random() * 680) + 1);
+    if((typeof data) === 'string'){
+        this.text = data;
+        this.date = currentDate;
+        this.id = (new Date()).getTime();
+        this.x = Math.floor((Math.random() * 1500) + 1);
+        this.y = Math.floor((Math.random() * 680) + 1);
+    }else{
+        this.text = data.text;
+        this.date = data.date;
+        this.id = data.id;
+        this.x = data.x;
+        this.y = data.y;
+    }
+    
+
     if(localStorage.getItem('notesArray') != null){
         notesArray = JSON.parse(localStorage.getItem('notesArray'));
         notesArray.push({id: this.id, text: this.text, date: this.date, x: this.x, y: this.y});

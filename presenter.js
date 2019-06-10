@@ -11,7 +11,10 @@ function Presenter(){
             // Cancel the default action, if needed
             event.preventDefault();
             var note = new Note(input.value);
+            actions.push({type:"add", initialInfo: note, elementId:note.id});
+            console.log("The actions updated are: ", actions);
             input.value = "";
+            notesArray = JSON.parse(localStorage.getItem('notesArray'));
             renderNote(note)
         }
     });
@@ -86,7 +89,7 @@ function restoreNotes(array){
 
 //function to update note in array and localStorage
 function updateNote(array, note){
-    var temp = array.find(x => x.id === note.id);
+    var temp = array.find(x => x.id == note.id);
     var idx =  array.indexOf(temp);
     array[idx] = note;
     localStorage.setItem('notesArray', JSON.stringify(array));
@@ -111,8 +114,14 @@ function allowDrop(ev) {
 function drop(ev) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
+    console.log("Data is: ", data);
+    var item = document.getElementById(data);
     var container = document.getElementsByClassName('notes-container')[0];
-    removeChild(container, document.getElementById(data));
+    //we have the id, so we look for that note
+    var note = notesArray.find(x => x.id == item.id);
+    actions.push({type:"remove", initialInfo: note, elementId:note.id});
+    console.log("The actions updated are: ", actions);
+    removeChild(container, item);
 }
 
 function dropInContainer(ev){
@@ -124,7 +133,10 @@ function dropInContainer(ev){
     item.style.left = ev.pageX+"px";
     item.style.top = ev.pageY+"px";
     var note = notesArray.find(x => x.id == item.id);
+    console.log("The item id is: ", item.id);
+    console.log(notesArray);
     actions.push({type:"position", initialInfo: {x:note.x, y:note.y}, finalInfo:{x:ev.pageX, y:ev.pageY}, elementId:item.id});
+    console.log("The actions updated are: ", actions);
     note.x = ev.pageX;
     note.y = ev.pageY;    
     updateNote(notesArray, note);
@@ -146,5 +158,44 @@ window.onload = function(){
         notesArray = JSON.parse(localStorage.getItem('notesArray'));
         restoreNotes(notesArray);
     }
+    
+    document.onkeydown = function(e){
+        var evtobj = window.event? event : e;
+        if (evtobj.keyCode == 90 && evtobj.ctrlKey){
+            if(actions.length > 0)
+                undo(actions.pop());
+        }
+    }
+
     var presenter = new Presenter();
+}
+
+function undo(action){
+    switch(action.type){
+        case "add":
+                var item = document.getElementById(action.elementId);
+                var container = document.getElementsByClassName('notes-container')[0];
+                removeChild(container, item);
+                break;
+        case "remove":
+                var note = new Note(action.initialInfo);
+                notesArray = JSON.parse(localStorage.getItem('notesArray'));
+                renderNote(note);
+                break;
+        case "position":
+                var item = document.getElementById(action.elementId);
+                item.style.left = action.initialInfo.x+"px";
+                item.style.top = action.initialInfo.y+"px";
+                var note = notesArray.find(x => x.id == action.elementId);
+                note.x = action.initialInfo.x;
+                note.y = action.initialInfo.y;
+                updateNote(notesArray, note);
+                break;
+        case "text":
+                var note = notesArray.find(x => x.id == action.elementId);
+                note.text = action.initialInfo;
+                updateNote(notesArray, note);
+                restoreNotes(notesArray);
+                break;
+    }
 }
