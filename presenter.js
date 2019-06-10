@@ -12,7 +12,6 @@ function Presenter(){
             event.preventDefault();
             var note = new Note(input.value);
             actions.push({type:"add", initialInfo: note, elementId:note.id});
-            console.log("The actions updated are: ", actions);
             input.value = "";
             notesArray = JSON.parse(localStorage.getItem('notesArray'));
             renderNote(note)
@@ -23,7 +22,6 @@ function Presenter(){
     search.addEventListener("keyup", function(event) {
         if (search.value.length > 0) {
             let results = notesArray.filter(note => note.text.includes(search.value));
-            console.log("The results are: ", results);
             restoreNotes(results);
         }else{
             notesArray = JSON.parse(localStorage.getItem('notesArray'));
@@ -79,7 +77,6 @@ function generateHtmlString(note){
 //function that gets notes from local storage and restore them as objects
 function restoreNotes(array){
     var container = document.getElementsByClassName('notes-container')[0];
-    console.log("Clearing container");
     container.innerHTML = "";
     for(var i = 0; i < array.length; i++){
         renderNote(array[i], array);
@@ -114,13 +111,11 @@ function allowDrop(ev) {
 function drop(ev) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
-    console.log("Data is: ", data);
     var item = document.getElementById(data);
     var container = document.getElementsByClassName('notes-container')[0];
     //we have the id, so we look for that note
     var note = notesArray.find(x => x.id == item.id);
     actions.push({type:"remove", initialInfo: note, elementId:note.id});
-    console.log("The actions updated are: ", actions);
     removeChild(container, item);
 }
 
@@ -133,10 +128,7 @@ function dropInContainer(ev){
     item.style.left = ev.pageX+"px";
     item.style.top = ev.pageY+"px";
     var note = notesArray.find(x => x.id == item.id);
-    console.log("The item id is: ", item.id);
-    console.log(notesArray);
     actions.push({type:"position", initialInfo: {x:note.x, y:note.y}, finalInfo:{x:ev.pageX, y:ev.pageY}, elementId:item.id});
-    console.log("The actions updated are: ", actions);
     note.x = ev.pageX;
     note.y = ev.pageY;    
     updateNote(notesArray, note);

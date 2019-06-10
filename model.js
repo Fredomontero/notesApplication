@@ -25,8 +25,6 @@ function Note(data){
         notesArray.push({id: this.id, text: this.text, date: this.date, x: this.x, y: this.y});
     }
     localStorage.setItem('notesArray', JSON.stringify(notesArray));
-    console.log("The local storage at this point is: ", localStorage);
-    
 }
 
 //Function that returns the date in format: DD/MM/YY at HH:MM
